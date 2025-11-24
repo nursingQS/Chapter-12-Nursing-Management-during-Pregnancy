@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nursing Management During Pregnancy Flashcards</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%);
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            height: 95vh;
+            max-height: 95vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4682B4, #87CEEB);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z" fill="white"/></svg>');
+        }
+        
+        .header h1 {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .header .subtitle {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        .progress {
+            background: #1E3A5F;
+            height: 8px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #4682B4, #87CEEB);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .flashcard {
+            padding: clamp(10px, 3vw, 20px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+        
+        .question-container {
+            display: flex;
+            gap: clamp(10px, 2vw, 15px);
+            align-items: flex-start;
+            margin-bottom: clamp(10px, 2vw, 15px);
+        }
+        
+        .question-icon {
+            background: #4682B4;
+            color: white;
+            width: clamp(35px, 8vw, 50px);
+            height: clamp(35px, 8vw, 50px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(70, 130, 180, 0.3);
+        }
+        
+        .question {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+            color: #1E3A5F;
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        .multiple-select-indicator {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 1.5vw, 10px);
+            margin-bottom: clamp(10px, 2vw, 20px);
+            flex: 1;
+        }
+        
+        .option {
+            padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px);
+            border: 2px solid #e8eaf6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 10px);
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .option:hover {
+            background: #f0f3ff;
+            border-color: #b3b7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .option-letter {
+            background: #f0f3ff;
+            color: #1E3A5F;
+            width: clamp(24px, 5vw, 28px);
+            height: clamp(24px, 5vw, 28px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+        }
+        
+        /* CORRECT - ALWAYS GREEN */
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.correct .option-letter {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* INCORRECT - ALWAYS RED */
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .option.incorrect .option-letter {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* Remove the selected class to prevent blue highlighting */
+        
+        .feedback {
+            padding: clamp(12px, 2.5vw, 16px);
+            border-radius: 12px;
+            margin-bottom: clamp(10px, 2vw, 16px);
+            display: none;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 12px);
+            font-weight: 500;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            display: flex;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+            display: flex;
+        }
+        
+        .feedback-icon {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            flex-shrink: 0;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(12px, 2.5vw, 16px) clamp(16px, 3vw, 24px);
+            background: #f0f3ff;
+            border-top: 1px solid #e8eaf6;
+            flex-shrink: 0;
+        }
+        
+        .counter {
+            font-weight: bold;
+            color: #1E3A5F;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .btn {
+            padding: clamp(10px, 2vw, 12px) clamp(15px, 2.5vw, 20px);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 1vw, 8px);
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            white-space: nowrap;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4682B4, #87CEEB);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(70, 130, 180, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #b3b7ff, #4682B4);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(179, 183, 255, 0.3);
+        }
+        
+        .rationale {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd43b;
+            border-radius: 12px;
+            padding: clamp(12px, 2.5vw, 16px);
+            margin-top: clamp(8px, 1.5vw, 12px);
+            display: none;
+        }
+        
+        .rationale.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .rationale h4 {
+            color: #856404;
+            margin-bottom: clamp(6px, 1.2vw, 10px);
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 1.2vw, 8px);
+            font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        }
+        
+        .rationale p {
+            color: #856404;
+            line-height: 1.6;
+            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats {
+            display: flex;
+            gap: clamp(8px, 1.5vw, 15px);
+            justify-content: center;
+            margin-top: clamp(4px, 1vw, 10px);
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.2);
+            padding: clamp(5px, 1vw, 6px) clamp(8px, 1.8vw, 12px);
+            border-radius: 20px;
+            font-size: clamp(0.7rem, 1.6vw, 0.85rem);
+            white-space: nowrap;
+        }
+        
+        /* Cancel selection button */
+        .cancel-selection {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            margin: 0 auto clamp(10px, 2vw, 15px) auto;
+            display: none;
+        }
+        
+        .cancel-selection:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
+        }
+        
+        .cancel-selection.show {
+            display: flex;
+        }
+        
+        /* Study mode controls */
+        .study-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .study-btn {
+            padding: 8px 16px;
+            border: 2px solid #4682B4;
+            background: white;
+            color: #4682B4;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .study-btn.active {
+            background: #4682B4;
+            color: white;
+        }
+        
+        .study-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(70, 130, 180, 0.2);
+        }
+        
+        /* Multiple select instructions */
+        .multiple-select-instructions {
+            text-align: center;
+            color: #e74c3c;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👩‍⚕️ Nursing Management During Pregnancy</h1>
+            <div class="subtitle">Chapter 12 - 33 Questions | Multiple-Select Enabled</div>
+            <div class="stats">
+                <div class="stat">🎯 33 Questions</div>
+                <div class="stat">📖 Detailed Rationales</div>
+                <div class="stat">🔢 5 Multiple-Answer Questions</div>
+                <div class="stat">↩️ Cancel Wrong Answers</div>
+            </div>
+        </div>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="flashcard">
+            <div class="study-controls">
+                <button class="study-btn active" id="allQuestionsBtn" onclick="setStudyMode('all')">All Questions</button>
+                <button class="study-btn" id="multipleSelectBtn" onclick="setStudyMode('multiple')">Multiple-Select Only</button>
+                <button class="study-btn" id="singleSelectBtn" onclick="setStudyMode('single')">Single-Select Only</button>
+                <button class="study-btn" id="incorrectBtn" onclick="setStudyMode('incorrect')">Review Incorrect</button>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-icon">?</div>
+                <div class="question" id="question"></div>
+                <div class="multiple-select-indicator" id="multipleSelectIndicator" style="display: none;">Multiple Answers</div>
+            </div>
+            
+            <div class="multiple-select-instructions" id="multipleSelectInstructions" style="display: none;">
+                💡 Select ALL correct answers - This question has multiple correct options
+            </div>
+            
+            <div class="options" id="options"></div>
+            
+            <!-- Cancel Selection Button - Only shows for wrong answers -->
+            <button class="btn cancel-selection" id="cancelBtn" onclick="cancelSelection()">
+                ↩️ Cancel Selection
+            </button>
+            
+            <div class="feedback" id="feedback">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div id="feedbackText"></div>
+            </div>
+            <div class="rationale" id="rationale">
+                <h4>💡 Rationale:</h4>
+                <p id="rationaleText"></p>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousCard()">
+                ⬅️ Previous
+            </button>
+            <div class="counter" id="counter">1/33</div>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextCard()">
+                Next ➡️
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1. A woman in the 34th week of pregnancy says to the nurse, \"I still feel like having intercourse with my husband.\" The woman's pregnancy has been uneventful. The nurse responds based on the understanding that:",
+                options: [
+                    "it is safe to have intercourse at this time.",
+                    "intercourse at this time is likely to cause rupture of membranes.",
+                    "there are other ways that the couple can satisfy their needs.",
+                    "intercourse at this time is likely to result in premature labor."
+                ],
+                correct: 0,
+                rationale: "Sexual activity is permissible during pregnancy unless there is a history of vaginal bleeding, placenta previa, risk of preterm labor, multiple gestation, incompetent cervix, premature rupture of membranes, or presence of infection. Rupture of membranes or premature labor is unlikely since the woman's pregnancy has been uneventful so far. Alternative sexual positions may be necessary as the woman's abdomen increases in size."
+            },
+            {
+                question: "2. On the first prenatal visit, examination of the woman's internal genitalia reveals a bluish coloration of the cervix and vaginal mucosa. The nurse documents this finding as:",
+                options: [
+                    "Hagar sign.",
+                    "Goodall sign.",
+                    "Chadwick sign.",
+                    "Homans sign."
+                ],
+                correct: 2,
+                rationale: "Chadwick sign refers to the bluish coloration of the cervix and vaginal mucosa. Hegar sign refers to softening of the isthmus. Goodell sign refers to softening of the cervix. Homans sign indicates pain on dorsiflexion of the foot."
+            },
+            {
+                question: "3. A nurse is teaching a pregnant couple about birth education. The nurse determines that the teaching was successful when the couple makes which statement?",
+                options: [
+                    "\"We'll have the knowledge to ensure a pain-free birth.\"",
+                    "\"We'll know what to do to actively take part in our child's birth.\"",
+                    "\"We won't be anxious, so the birth will be uncomplicated.\"",
+                    "\"We will be in total control of the birth process.\""
+                ],
+                correct: 1,
+                rationale: "The primary focus of birth education is to provide information and support to clients and their families to foster a more active role in the upcoming birth. Some methods of birth education focus on pain-free childbirth. Information provided in birth education classes helps to minimize anxiety and provide the couple with control over the situation, but elimination of anxiety or total control is unrealistic."
+            },
+            {
+                question: "4. When assessing a woman at follow-up prenatal visits, the nurse would anticipate which procedure to be performed?",
+                options: [
+                    "hemoglobin and hematocrit",
+                    "urine for culture",
+                    "fetal ultrasound",
+                    "fundal height measurement"
+                ],
+                correct: 3,
+                rationale: "On every follow-up visit, fundal height measurements are performed to evaluate fetal growth and gestation. Hemoglobin and hematocrit, as part of a complete blood count, would be done on the initial visit and then repeated if the woman's status indicates a need for doing so. Urine is checked for protein, glucose, ketones, and nitrites. A culture would be done if there are signs and symptoms of an infection. Fetal ultrasound can be done at any time during the prenatal period, but it is not done at every visit."
+            },
+            {
+                question: "5. During a routine prenatal visit, a client, 36 weeks pregnant, states she has difficulty breathing and feels like her pulse rate is really fast. The nurse finds her pulse to be 100 beats per minute (increased from baseline readings of 70 to 74 beats per minute) and irregular, with bilateral crackles in the lower lung bases. Which nursing diagnosis would be the priority for this client?",
+                options: [
+                    "Ineffective tissue perfusion related to supine hypotensive syndrome",
+                    "Impaired gas exchange related to pulmonary congestion",
+                    "Activity intolerance related to increased metabolic requirements",
+                    "Anxiety related to fear of pregnancy outcome"
+                ],
+                correct: 1,
+                rationale: "Typically, heart rate increases by approximately 10 to 15 beats per minute during pregnancy and the lungs should be clear. Dyspnea may occur during the third trimester as the enlarging uterus presses on the diaphragm. However, the findings described indicate that the woman is experiencing impaired gas exchange. There is no evidence to support supine hypotensive syndrome, increased metabolism, or anxiety."
+            },
+            {
+                question: "6. When preparing a woman for an amniocentesis, the nurse would instruct her to perform which action?",
+                options: [
+                    "Shower with an antiseptic scrub.",
+                    "Swallow the preprocedure sedative.",
+                    "Empty the bladder.",
+                    "Lie on the left side."
+                ],
+                correct: 2,
+                rationale: "Before an amniocentesis, the woman should empty her bladder to reduce the risk of bladder puncture during the procedure. Showering with an antiseptic scrub and preprocedural sedation are not necessary. The woman usually is positioned in a way that provides an adequate pocket of amniotic fluid on ultrasound."
+            },
+            {
+                question: "7. A client who is 4 months pregnant is at the prenatal clinic for her initial visit. Her history reveals she has 7-year-old twins who were born at 34 weeks' gestation, a 2-year-old son born at 39 weeks' gestation, and a spontaneous abortion (miscarriage) 1 year ago at 6 weeks' gestation. Using the GTPAL method, the nurse would document her obstetric history as:",
+                options: [
+                    "3 2 1 0 3.",
+                    "3 1 2 2 3.",
+                    "4 1 1 1 3.",
+                    "4 2 1 3 1."
+                ],
+                correct: 2,
+                rationale: "Using the GTPAL method, the woman's history would be documented as 4 (her fourth pregnancy), 1 (number of term pregnancies), 1 (number of pregnancies ending in preterm birth), 1 (number of pregnancies ending before 20 weeks or viability), and 3 (number of living children)."
+            },
+            {
+                question: "8. A client's last menstrual period was April 11. Using the Naegele rule, her estimated date of delivery (EDD) would be:",
+                options: [
+                    "January 4.",
+                    "January 18.",
+                    "January 25.",
+                    "February 24."
+                ],
+                correct: 1,
+                rationale: "To use the Naegele rule, subtract 3 months and then add 7 days to the first day of the client's LMP (April 11): April minus 3 months is January, plus 7 days is 18. Thus, her EDB would be January 18 of the next year."
+            },
+            {
+                question: "9. During a nonstress test, when monitoring the fetal heart rate, the nurse notes that when the expectant mother reports fetal movement, the heart rate increases 15 beats or more above the baseline. This occurs about 4 or 5 times during the testing period. The nurse interprets this as:",
+                options: [
+                    "variable decelerations.",
+                    "fetal tachycardia.",
+                    "a nonreactive pattern.",
+                    "reactive pattern."
+                ],
+                correct: 3,
+                rationale: "A reactive NST includes at least two fetal heart rate accelerations from the baseline of at least 15 bpm for at least 15 seconds within the 20-minute recording period. If the test does not meet these criteria after 40 minutes, it is considered nonreactive. A nonreactive NST is characterized by the absence of two fetal heart rate accelerations using the 15-by-15 criterion in a 20-minute time frame. An increase in the fetal heart rate does not indicate variable decelerations. Fetal tachycardia would be noted as a heart rate greater than 160 bpm."
+            },
+            {
+                question: "10. A nurse is assessing a pregnant woman in her last trimester. Which question would be most appropriate to use to gather information about weight gain and fluid retention?",
+                options: [
+                    "\"What's your usual dietary intake for a typical week?\"",
+                    "\"What size maternity clothes are you wearing now?\"",
+                    "\"How puffy does your face look by the end of a day?\"",
+                    "\"How swollen do your ankles appear before you go to bed?\""
+                ],
+                correct: 3,
+                rationale: "Edema, especially in the dependent areas such as the legs and feet, occurs throughout the day due to gravity. It improves after a night's sleep. Therefore, questioning the client about ankle swelling would provide the most valuable information. Asking about her usual dietary intake would be valuable in assessing complaints of heartburn and indigestion. The size of maternity clothing may provide information about weight gain but would have little significance for fluid retention. Swelling in the face may suggest preeclampsia, especially if it is accompanied by dizziness, blurred vision, headaches, upper quadrant pain, or nausea."
+            },
+            {
+                question: "11. A pregnant woman in the 36th week of gestation reports that her feet are quite swollen at the end of the day. After careful assessment, the nurse determines that this is an expected finding at this stage of pregnancy. Which intervention is appropriate for the nurse to suggest?",
+                options: [
+                    "\"Limit your intake of fluids.\"",
+                    "\"Eliminate salt from your diet.\"",
+                    "\"Try elevating your legs when you sit.\"",
+                    "\"Wear spandex-type full-length pants.\""
+                ],
+                correct: 2,
+                rationale: "The client is experiencing dependent edema due to the effect of gravity and increased capillary permeability caused by elevated hormone levels and increased blood volume and accompanied by sodium and water retention. The best suggestion would be to encourage the woman to elevate her legs when sitting to promote venous return and minimize the effects of gravity. Neither fluids nor salt should be limited or eliminated. Six to eight glasses of water each day are necessary to replace fluids lost through perspiration. Foods high in sodium should be avoided. Spandex-type full-length pants would be constricting and interfere with venous return."
+            },
+            {
+                question: "12. A pregnant woman needs an update in her immunizations. Which vaccination would the nurse ensure that the woman receives?",
+                options: [
+                    "measles",
+                    "mumps",
+                    "rubella",
+                    "hepatitis B"
+                ],
+                correct: 3,
+                rationale: "Hepatitis B vaccine should be considered during pregnancy. Immunizations for measles, mumps, and rubella are contraindicated during pregnancy."
+            },
+            {
+                question: "13. A pregnant woman is flying across the country to visit her family. After teaching the woman about traveling during pregnancy, which statement indicates that the teaching was successful?",
+                options: [
+                    "\"I'll sit in a window seat so I can focus on the sky to help relax me.\"",
+                    "\"I won't drink too much fluid so I don't have to urinate so often.\"",
+                    "\"I'll get up and walk around the airplane about every 2 hours.\"",
+                    "\"I'll do some upper arm stretches while sitting in my seat.\""
+                ],
+                correct: 2,
+                rationale: "When traveling by airplane, the woman should get up and walk about the plane every 2 hours to promote circulation. An aisle seat is recommended so that she can have easy access to the aisle. Drinking water throughout the flight is encouraged to maintain hydration. Calf-tensing exercises are important to improve circulation to the lower extremities."
+            },
+            {
+                question: "14. During a routine prenatal visit, a client, 36 weeks pregnant, states she has difficulty breathing and feels like her pulse rate is really fast. The nurse finds her pulse to be 100 beats per minute (increased from baseline readings of 70 to 74 beats per minute) and irregular, with bilateral crackles in the lower lung bases. Which nursing diagnosis would be the priority for this client?",
+                options: [
+                    "Ineffective tissue perfusion related to supine hypotensive syndrome",
+                    "Impaired gas exchange related to pulmonary congestion",
+                    "Activity intolerance related to increased metabolic requirements",
+                    "Anxiety related to fear of pregnancy outcome"
+                ],
+                correct: 1,
+                rationale: "Typically, heart rate increases by approximately 10 to 15 beats per minute during pregnancy, and the lungs should be clear. Dyspnea may occur during the third trimester as the enlarging uterus presses on the diaphragm. However, the findings described indicate that the woman is experiencing impaired gas exchange. There is no evidence to support supine hypotensive syndrome, increased metabolism, or anxiety."
+            },
+            {
+                question: "15. A biophysical profile has been completed on a pregnant woman. The nurse interprets which score as normal?",
+                options: [
+                    "9",
+                    "7",
+                    "5",
+                    "3"
+                ],
+                correct: 0,
+                rationale: "The biophysical profile is a scored test with five components, each worth 2 points if present. A total score of 10 is possible if the NST is used. Overall, a score of 8 to 10 is considered normal if the amniotic fluid volume is adequate. A score of 6 or below is suspicious, possibly indicating a compromised fetus; further investigation of fetal well-being is needed."
+            },
+            {
+                question: "16. A nurse is teaching a pregnant client in her first trimester about discomforts that she may experience. The nurse determines that the teaching was successful when the woman identifies which discomforts as common during the first trimester? Select all that apply.",
+                options: [
+                    "urinary frequency",
+                    "breast tenderness",
+                    "cravings",
+                    "backache",
+                    "leg cramps"
+                ],
+                correct: [0, 1, 2],
+                rationale: "Discomforts common in the first trimester include urinary frequency, breast tenderness, and cravings. Backache and leg cramps are common during the second trimester. Legs cramps are also common during the third trimester."
+            },
+            {
+                question: "17. A nurse is reviewing the medical record of a pregnant woman and notes that she is gravida II. The nurse interprets this to indicate the number of:",
+                options: [
+                    "births.",
+                    "pregnancies.",
+                    "spontaneous abortions.",
+                    "preterm births."
+                ],
+                correct: 1,
+                rationale: "Gravida refers to a pregnant woman—gravida I (primigravida) during the first pregnancy, gravida II (secundigravida) during the second pregnancy, and so on. Para refers to the number of births at 20 weeks or greater that a woman has, regardless of whether the newborn is born alive or dead. \"A\" would be used to denote the number of abortions and \"P\" would be used to denote the number of preterm births when using the GTPAL system."
+            },
+            {
+                question: "18. A nurse measures a pregnant woman's fundal height and finds it to be 28 cm. The nurse interprets this to indicate that the client is at how many weeks' gestation?",
+                options: [
+                    "14 weeks' gestation",
+                    "20 weeks' gestation",
+                    "28 weeks' gestation",
+                    "36 weeks' gestation"
+                ],
+                correct: 2,
+                rationale: "Typically, the height of the fundus is measured when the uterus arises out of the pelvis to evaluate fetal growth. At 12 weeks' gestation the fundus can be palpated at the symphysis pubis. At 16 weeks' gestation the fundus is midway between the symphysis and the umbilicus. At 20 weeks the fundus can be palpated at the umbilicus and measures approximately 20 cm from the symphysis pubis. By 36 weeks the fundus is just below the xiphoid process and measures approximately 36 cm."
+            },
+            {
+                question: "19. A pregnant woman has a rubella titer drawn on her first prenatal visit. The nurse explains that this test measures:",
+                options: [
+                    "platelet level.",
+                    "Rh status.",
+                    "immunity to German measles.",
+                    "red blood cell count."
+                ],
+                correct: 2,
+                rationale: "A rubella titer detects antibodies for the virus that causes German measles. If the titer is 1:8 or less, the woman is not immune and requires immunization after birth. Platelet level and red blood cell count would be determined by a complete blood count. Rh status would be determined by blood typing."
+            },
+            {
+                question: "20. A nurse is working with a pregnant client to schedule follow-up visits for the pregnancy. Which statement by the client indicates that she understands the scheduling?",
+                options: [
+                    "\"I need to make visits every 2 months until I am 36 weeks' pregnant.\"",
+                    "\"Once I get to 28 weeks' pregnant, I have to come twice a month.\"",
+                    "\"From now until I am 28 weeks' pregnant, I will be coming once a month.\"",
+                    "\"I will make sure to get a day off every 2 weeks to make my visits.\""
+                ],
+                correct: 2,
+                rationale: "Continuous prenatal care is important for a successful pregnancy outcome. The recommended follow-up visit schedule for a healthy pregnant woman is as follows: every 4 weeks up to 28 weeks' (7 months') gestation; every 2 weeks from 29 to 36 weeks' gestation; every week from 37 weeks' gestation to birth."
+            },
+            {
+                question: "21. A nurse is describing the various birth methods to pregnant couples. Which information would the nurse include as part of the Lamaze method?",
+                options: [
+                    "focus on the pleasurable sensations of birth",
+                    "concentration on sensations while turning on to own bodies",
+                    "interruption of the fear-tension-pain cycle",
+                    "use of specific breathing and relaxation techniques"
+                ],
+                correct: 3,
+                rationale: "Lamaze is a psychoprophylactic (\"mind prevention\") method of preparing for labor and birth that promotes the use of specific breathing and relaxation techniques. The Bradley method emphasizes the pleasurable sensations of birth, teaching women to concentrate on these sensations while \"turning on\" to their own bodies. The Dick-Read method seeks to interrupt the circular pattern of fear, tension, and pain during the labor and birthing process."
+            },
+            {
+                question: "22. After teaching a group of prospective new parents about the different perinatal education methods, the nurse determines that the teaching was successful when the parents identify which method as the Bradley method?",
+                options: [
+                    "psychoprophylactic method",
+                    "partner-coached method",
+                    "natural birth method",
+                    "mind prevention method"
+                ],
+                correct: 1,
+                rationale: "The Bradley method is also a partner-coached method that uses various exercises and slow, controlled abdominal breathing to accomplish relaxation and active participation of the partner as labor coach. The Lamaze method is a psychoprophylactic or mind prevention method. The Dick-Read method is referred to as natural birth. Dick-Read believed that prenatal instruction was essential for pain relief and that emotional factors during labor interfered with the normal labor progression. The woman achieves relaxation and reduces pain by arming herself with the knowledge of normal childbirth and using abdominal breathing during contractions."
+            },
+            {
+                question: "23. A pregnant woman in her second trimester tells the nurse, \"I've been passing a lot of gas and feel bloated.\" Which suggestion would be helpful for the woman? Select all that apply.",
+                options: [
+                    "\"Watch how much beans and onions you eat.\"",
+                    "\"Limit the amount of fluid you drink with meals.\"",
+                    "\"Try exercising a little more.\"",
+                    "\"Some say that eating mints can help.\"",
+                    "\"Cut down on your intake of cheeses.\""
+                ],
+                correct: [0, 2, 3, 4],
+                rationale: "For gas and bloating, the nurse would instruct the woman to avoid gas-forming foods, such as beans, cabbage, and onions, as well as foods that have a high content of white sugar. Adding more fiber to the diet, increasing fluid intake, and increasing physical exercise are also helpful in reducing flatus. In addition, reducing the amount of swallowed air when chewing gum or smoking will reduce gas build-up. Reducing the intake of carbonated beverages and cheese and eating mints can also help reduce flatulence during pregnancy."
+            },
+            {
+                question: "24. When describing perinatal education to a pregnant woman and her partner, the nurse emphasizes which goal as the primary one?",
+                options: [
+                    "Equip a couple with the knowledge to experience a pain-free birth.",
+                    "Provide knowledge and skills to actively participate in birth and parenting.",
+                    "Eliminate anxiety so that they can have an uncomplicated birth.",
+                    "Empower the couple to totally control the birth process."
+                ],
+                correct: 1,
+                rationale: "The primary focus of perinatal education is to provide information and support to clients and their families to foster a more active role in the upcoming birth. It also includes preparation for breastfeeding, infant care, transition to new parenting roles, relationships skills, family health promotion, and sexuality. Some methods of birth education focus on pain-free birth. Information provided in birth education classes helps to minimize anxiety and provide the couple with control over the situation, but elimination of anxiety or total control is unrealistic."
+            },
+            {
+                question: "25. During a routine prenatal visit, a client at 36 weeks' gestation states she has difficulty breathing and feels like her pulse rate is really fast. The nurse finds her pulse to be 100 beats per minute (increased from baseline readings of 70 to 74 beats per minute) and irregular, with bilateral crackles in the lower lung bases. The nurse would develop a plan of care identifying interventions to promote which area as the priority?",
+                options: [
+                    "tissue perfusion",
+                    "gas exchange",
+                    "activity",
+                    "anxiety"
+                ],
+                correct: 1,
+                rationale: "Typically, heart rate increases by approximately 10 to 15 beats per minute during pregnancy and the lungs should be clear. Dyspnea may occur during the third trimester as the enlarging uterus presses on the diaphragm. However, the findings described indicate that the woman is experiencing impaired gas exchange. There is no evidence to support problems with tissue perfusion, activity, or anxiety."
+            },
+            {
+                question: "26. A pregnant woman is scheduled to undergo an amniocentesis. When explaining this test to the client, the nurse would also include information about which test being done at the same time?",
+                options: [
+                    "ultrasound",
+                    "chorionic villus sampling",
+                    "biophysical profile",
+                    "Doppler flow study"
+                ],
+                correct: 0,
+                rationale: "An ultrasound is used to confirm placental location during amniocentesis. Chorionic villus sample, biophysical profile, and Doppler flow study are not done at the same time as an amniocentesis."
+            },
+            {
+                question: "27. A nurse is auscultating the chest of a client at 16 weeks' gestation. The nurse immediately notifies the health care provider about which finding?",
+                options: [
+                    "heart rate 25 bpm above baseline",
+                    "soft systolic murmur",
+                    "clear breath sounds",
+                    "symmetrical chest movement."
+                ],
+                correct: 0,
+                rationale: "Heart rate typically increases by 10 to 15 bpm starting between 14 to 20 weeks of pregnancy. However, an increase of 25 bpm would be a cause for concern. A soft systolic murmur, clear breath sounds, and symmetrical chest movement are normal findings."
+            },
+            {
+                question: "28. A nurse is reviewing the results of four clients who have undergone amniocentesis. Which client would the nurse recommend that the health care provider see first?",
+                options: [
+                    "client at 16 weeks' gestation with placenta previa and high alpha-fetoprotein level",
+                    "client at 34 weeks' gestation with gestational diabetes and L/S ratio of 2:1",
+                    "client at 36 weeks' gestation with preeclampsia and amniotic fluid negative for bilirubin",
+                    "client at 38 weeks' gestation with fetal heart rate of 110 and green amniotic fluid sample"
+                ],
+                correct: 3,
+                rationale: "The client at 38 weeks' gestation should be evaluated first because the green amniotic fluid suggests possible meconium staining and the fetal heart rate is bradycardic. Immediate evaluation and intervention would be essential. A high alpha fetoprotein level may suggest a neural tube defect or possible chromosomal abnormality. Although important to address, this client would not be the priority. The client at 34 weeks' with gestational diabetes and an L/S ratio of 2:1 indicates that the lung of the fetus are mature, should delivery be necessary. Amniotic fluid that is negative for bilirubin is a normal finding."
+            },
+            {
+                question: "29. A pregnant woman is scheduled for chorionic villus sampling. The nurse is describing the procedure and the potential for complications. When providing care to the client after the testing, the nurse would be alert for which complication as the most common? Select all that apply.",
+                options: [
+                    "vaginal bleeding",
+                    "cramping",
+                    "spontaneous abortion",
+                    "rupture of membranes",
+                    "hematoma"
+                ],
+                correct: [0, 1],
+                rationale: "Although spontaneous abortion, rupture of membranes, and hematoma can occur after chorionic villus sampling, vaginal bleeding and cramping are the most common."
+            },
+            {
+                question: "30. A 24-year-old client who is planning to become pregnant comes to the clinic for an evaluation. When assessing the client, which finding would alert the nurse to implement measures to reduce the client's risk for problems during pregnancy? Select all that apply.",
+                options: [
+                    "drinks wine 3 to 4 times/week",
+                    "quit smoking 4 years ago",
+                    "follows a vegetarian diet",
+                    "has a BMI of 22",
+                    "uses ibuprofen daily"
+                ],
+                correct: [0, 4],
+                rationale: "The use of alcohol and prescription and over-the-counter drugs can be harmful to a growing fetus. Thus the nurse would need to address these areas with the client. If the client was still smoking, then that too would need to be addressed. Healthy nutrition is important, but being a vegetarian does not necessarily indicate that the client is a nutritional risk. A BMI of 22 is considered normal and would not pose a problem."
+            },
+            {
+                question: "31. A client comes to the prenatal clinic for her first visit. When determining the client's estimated due date, the nurse understands what which method is the most accurate?",
+                options: [
+                    "Nagele's rule",
+                    "gestational wheel",
+                    "birth calculator",
+                    "ultrasound"
+                ],
+                correct: 3,
+                rationale: "Although there are several methods for determining the EDD, the ultrasound is considered the most accurate method for dating the pregnancy."
+            },
+            {
+                question: "32. The nurse is assessing the latest laboratory results of a pregnant client who is at 17 weeks gestation. The nurse should prepare to teach the client about which possible defects after noting the maternal serum alpha-fetoprotein level is elevated above normal?",
+                options: [
+                    "fetal hypoxia",
+                    "open spinal defects",
+                    "Down syndrome",
+                    "maternal hypertension"
+                ],
+                correct: 1,
+                rationale: "Elevated MSAFP levels are associated with open neural tube defects, underestimation of gestational age, the presence of multiple fetuses, gastrointestinal defects, low birth weight, oligohydramnios, material age, diabetes, and decreased maternal weight. Lower-than-expected MSAFP levels are seen when fetal gestational age is overestimated or in cases of fetal death, hydatidiform mole, increased maternal weight, maternal type 1 diabetes, and fetal trisomy 21 (Down syndrome) or 18. Fetal hypoxia would be noted with fetal heart rate tracings and via nonstress and contraction stress testing. Maternal hypertension would be noted via serial blood pressure monitoring."
+            },
+            {
+                question: "33. The nurse is preparing a client for a chorionic villi sampling procedure. Which factor should the nurse point out in the teaching session to the client?",
+                options: [
+                    "\"The results should be available in about 2 weeks.\"",
+                    "\"You'll have an ultrasound first and then the test.\"",
+                    "\"Afterward, you can resume your exercise program.\"",
+                    "\"This test is very helpful for identifying spinal defects.\""
+                ],
+                correct: 1,
+                rationale: "With CVS, an ultrasound is done to confirm gestational age and viability. Then, under continuous ultrasound guidance, CVS is performed using either a transcervical or transabdominal approach. With the transcervical approach, the woman is placed in the lithotomy position and a sterile catheter is introduced through the cervix and inserted in the placenta, where a sample of chorionic villi is aspirated. This approach requires the client to have a full bladder to push the uterus and placenta into a position that is more accessible to the catheter. A full bladder also helps in better visualization of the helps in better visualization of the structures. With the transabdominal approach, an 18-gauge spinal needle is inserted through the abdominal wall into the placental tissue and a sample of chorionic villi is aspirated. Regardless of the approach used, the sample is sent to the cytogenetics laboratory for analysis. The results are usually available in less than one week. After the procedure, the woman is assisted into a position of comfort and any excess lubricant or secretions are cleaned from the area. The woman is instructed about signs to watch for and report, such as fever, cramping, and vaginal bleeding. The woman is also urged not to engage in any strenuous activity for the next 48 hours. RhoGAM is given to an unsensitized Rh-negative woman after the procedure. CVS can be used to detect numerous genetic disorders but not neural tube defects as no amniotic fluid is collected with this procedure. The woman would need to have MSAFP levels drawn at 16 to 18 weeks' gestation to test for neural tube defects."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedOption = null;
+        let score = 0;
+        let answers = Array(questions.length).fill(null);
+        let incorrectQuestions = [];
+        let studyMode = 'all'; // 'all', 'multiple', 'single', 'incorrect'
+        let filteredQuestions = [...questions];
+
+        function setStudyMode(mode) {
+            studyMode = mode;
+            
+            // Update button states
+            document.querySelectorAll('.study-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(mode + 'Btn').classList.add('active');
+            
+            // Filter questions based on mode
+            switch(mode) {
+                case 'all':
+                    filteredQuestions = [...questions];
+                    break;
+                case 'multiple':
+                    filteredQuestions = questions.filter(q => Array.isArray(q.correct) && q.correct.length > 1);
+                    break;
+                case 'single':
+                    filteredQuestions = questions.filter(q => !Array.isArray(q.correct) || q.correct.length === 1);
+                    break;
+                case 'incorrect':
+                    filteredQuestions = questions.filter((_, index) => incorrectQuestions.includes(index));
+                    if (filteredQuestions.length === 0) {
+                        alert('No incorrect questions to review yet!');
+                        filteredQuestions = [...questions];
+                    }
+                    break;
+            }
+            
+            currentQuestion = 0;
+            loadQuestion();
+        }
+
+        function isMultipleSelectQuestion(question) {
+            return Array.isArray(question.correct) && question.correct.length > 1;
+        }
+
+        function loadQuestion() {
+            if (filteredQuestions.length === 0) {
+                document.getElementById('question').textContent = "No questions available for the selected study mode.";
+                document.getElementById('options').innerHTML = '';
+                document.getElementById('counter').textContent = `0/0`;
+                return;
+            }
+
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            document.getElementById('question').textContent = question.question;
+            document.getElementById('counter').textContent = `${currentQuestion + 1}/${filteredQuestions.length}`;
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / filteredQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Show/hide multiple select indicators
+            const isMultiple = isMultipleSelectQuestion(question);
+            document.getElementById('multipleSelectIndicator').style.display = isMultiple ? 'block' : 'none';
+            document.getElementById('multipleSelectInstructions').style.display = isMultiple ? 'block' : 'none';
+            
+            // Load options
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Reset feedback and rationale
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('rationale').className = 'rationale';
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === filteredQuestions.length - 1 ? 'Finish ➡️' : 'Next ➡️';
+            
+            // Check if we have a stored answer for this question
+            const storedAnswer = answers[originalIndex];
+            document.getElementById('nextBtn').disabled = storedAnswer === null || storedAnswer === undefined;
+            
+            // Reset cancel button visibility
+            document.getElementById('cancelBtn').classList.remove('show');
+            
+            // If this question was already answered, show the answer
+            if (storedAnswer !== null && storedAnswer !== undefined) {
+                if (Array.isArray(storedAnswer)) {
+                    // Multiple selection question
+                    storedAnswer.forEach(index => {
+                        selectOption(index, true);
+                    });
+                } else {
+                    // Single selection question
+                    selectOption(storedAnswer, true);
+                }
+            }
+        }
+
+        function selectOption(index, fromMemory = false) {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            // Check if this is a multiple selection question
+            if (isMultipleSelectQuestion(question)) {
+                // Multiple selection logic
+                if (!fromMemory) {
+                    if (!answers[originalIndex]) {
+                        answers[originalIndex] = [];
+                    }
+                    
+                    const optionIndex = answers[originalIndex].indexOf(index);
+                    if (optionIndex === -1) {
+                        answers[originalIndex].push(index);
+                    } else {
+                        answers[originalIndex].splice(optionIndex, 1);
+                    }
+                }
+                
+                highlightSelectedOptions();
+                showFeedbackForMultiple();
+                
+                // Enable next button if at least one option is selected
+                document.getElementById('nextBtn').disabled = !answers[originalIndex] || answers[originalIndex].length === 0;
+                return;
+            }
+            
+            // Single selection logic
+            if (selectedOption !== null && !fromMemory) return;
+            
+            if (!fromMemory) {
+                selectedOption = index;
+                answers[originalIndex] = index;
+            }
+            
+            highlightSelectedOption(index);
+            showFeedback(index);
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function highlightSelectedOption(index) {
+            const options = document.querySelectorAll('.option');
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            options.forEach((option, i) => {
+                option.classList.remove('correct', 'incorrect');
+                
+                if (i === index) {
+                    // ALWAYS show correct answers in GREEN
+                    if (i === question.correct) {
+                        option.classList.add('correct');
+                        if (!answers[originalIndex]) score++;
+                        document.getElementById('cancelBtn').classList.remove('show');
+                        
+                        // Remove from incorrect questions if it was there
+                        const incorrectIndex = incorrectQuestions.indexOf(originalIndex);
+                        if (incorrectIndex > -1) {
+                            incorrectQuestions.splice(incorrectIndex, 1);
+                        }
+                    } else {
+                        // ALWAYS show incorrect answers in RED
+                        option.classList.add('incorrect');
+                        // Also highlight the correct answer in GREEN
+                        options[question.correct].classList.add('correct');
+                        document.getElementById('cancelBtn').classList.add('show');
+                        
+                        // Add to incorrect questions
+                        if (!incorrectQuestions.includes(originalIndex)) {
+                            incorrectQuestions.push(originalIndex);
+                        }
+                    }
+                }
+            });
+        }
+
+        function highlightSelectedOptions() {
+            const options = document.querySelectorAll('.option');
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            const selectedIndices = answers[originalIndex] || [];
+            
+            // First, highlight ALL correct answers in GREEN
+            question.correct.forEach(correctIndex => {
+                options[correctIndex].classList.add('correct');
+            });
+            
+            // Then, highlight selected options
+            options.forEach((option, i) => {
+                if (selectedIndices.includes(i)) {
+                    // If selected but incorrect, highlight in RED
+                    if (!question.correct.includes(i)) {
+                        option.classList.add('incorrect');
+                    }
+                }
+            });
+            
+            // Check if answer is correct and update score/tracking
+            const allCorrectSelected = question.correct.every(c => selectedIndices.includes(c));
+            const noIncorrectSelected = selectedIndices.every(s => question.correct.includes(s));
+            
+            if (allCorrectSelected && noIncorrectSelected) {
+                if (!answers[originalIndex]) score++;
+                // Remove from incorrect questions
+                const incorrectIndex = incorrectQuestions.indexOf(originalIndex);
+                if (incorrectIndex > -1) {
+                    incorrectQuestions.splice(incorrectIndex, 1);
+                }
+            } else {
+                // Add to incorrect questions
+                if (!incorrectQuestions.includes(originalIndex)) {
+                    incorrectQuestions.push(originalIndex);
+                }
+            }
+        }
+
+        function cancelSelection() {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            selectedOption = null;
+            answers[originalIndex] = null;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('rationale').classList.remove('show');
+            document.getElementById('cancelBtn').classList.remove('show');
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function showFeedback(index) {
+            const question = filteredQuestions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const rationale = document.getElementById('rationale');
+            const rationaleText = document.getElementById('rationaleText');
+            
+            if (index === question.correct) {
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct! Well done.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Incorrect. The right answer is: ${String.fromCharCode(65 + question.correct)}`;
+            }
+            
+            feedback.style.display = 'flex';
+            rationaleText.textContent = question.rationale;
+            rationale.classList.add('show');
+        }
+
+        function showFeedbackForMultiple() {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const rationale = document.getElementById('rationale');
+            const rationaleText = document.getElementById('rationaleText');
+            
+            const selectedIndices = answers[originalIndex] || [];
+            const allCorrectSelected = question.correct.every(c => selectedIndices.includes(c));
+            const noIncorrectSelected = selectedIndices.every(s => question.correct.includes(s));
+            
+            if (allCorrectSelected && noIncorrectSelected) {
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct! All right answers selected.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                const correctLetters = question.correct.map(c => String.fromCharCode(65 + c)).join(', ');
+                feedbackText.textContent = `Incorrect. The right answers are: ${correctLetters}`;
+            }
+            
+            feedback.style.display = 'flex';
+            rationaleText.textContent = question.rationale;
+            rationale.classList.add('show');
+        }
+
+        function nextCard() {
+            if (currentQuestion < filteredQuestions.length - 1) {
+                currentQuestion++;
+                selectedOption = null;
+                loadQuestion();
+            } else {
+                const correctCount = questions.reduce((count, question, index) => {
+                    if (answers[index] === null || answers[index] === undefined) return count;
+                    
+                    if (Array.isArray(question.correct)) {
+                        const selected = answers[index] || [];
+                        const allCorrect = question.correct.every(c => selected.includes(c));
+                        const noIncorrect = selected.every(s => question.correct.includes(s));
+                        return allCorrect && noIncorrect ? count + 1 : count;
+                    } else {
+                        return answers[index] === question.correct ? count + 1 : count;
+                    }
+                }, 0);
+                
+                alert(`Quiz completed! Your score: ${correctCount}/${questions.length}\nIncorrect questions: ${incorrectQuestions.length}`);
+                
+                if (studyMode === 'incorrect' && incorrectQuestions.length > 0) {
+                    // Continue with incorrect questions
+                    filteredQuestions = questions.filter((_, index) => incorrectQuestions.includes(index));
+                    currentQuestion = 0;
+                    loadQuestion();
+                } else {
+                    // Reset to all questions
+                    currentQuestion = 0;
+                    selectedOption = null;
+                    score = 0;
+                    answers = Array(questions.length).fill(null);
+                    filteredQuestions = [...questions];
+                    setStudyMode('all');
+                }
+            }
+        }
+
+        function previousCard() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                const question = filteredQuestions[currentQuestion];
+                const originalIndex = questions.indexOf(question);
+                selectedOption = answers[originalIndex];
+                loadQuestion();
+            }
+        }
+
+        // Initialize the app
+        loadQuestion();
+    </script>
+</body>
+</html>
